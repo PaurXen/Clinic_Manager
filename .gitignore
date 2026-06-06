@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+.vscode/
+logs/
+**/appsettings.Production.json
+src/ClinicManager/wwwroot/uploads/*
+!src/ClinicManager/wwwroot/uploads/.gitkeep
+PerformanceTests/bin/
+PerformanceTests/obj/
+tests/**/bin/
+tests/**/obj/
