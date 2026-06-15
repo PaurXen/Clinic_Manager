@@ -1,0 +1,41 @@
+name: dotnet-ci
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      buildDocker:
+        description: 'Build Docker image'
+        required: false
+        default: 'false'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore app
+        run: dotnet restore src/ClinicManager/ClinicManager.csproj
+
+      - name: Build app
+        run: dotnet build src/ClinicManager/ClinicManager.csproj --configuration Release --no-restore
+
+      - name: Restore tests
+        run: dotnet restore tests/ClinicManager.Tests/ClinicManager.Tests.csproj
+
+      - name: Test
+        run: dotnet test tests/ClinicManager.Tests/ClinicManager.Tests.csproj --configuration Release --verbosity normal
+
+      - name: Build Docker image
+        if: ${{ github.event.inputs.buildDocker == 'true' }}
+        run: docker build -t clinicmanager:ci -f src/ClinicManager/Dockerfile .
