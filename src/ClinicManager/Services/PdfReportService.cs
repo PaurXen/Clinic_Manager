@@ -7,6 +7,10 @@ namespace ClinicManager.Services;
 
 public class PdfReportService : IPdfReportService
 {
+    static PdfReportService()
+    {
+        QuestPDF.Settings.License = LicenseType.Community;
+    }
     public byte[] GenerateCostReport(CostReportDto report) => Document.Create(container =>
     {
         container.Page(page =>
